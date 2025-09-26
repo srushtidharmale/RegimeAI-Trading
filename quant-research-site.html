@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Futures Trading Strategies - 5-Month Research Journey</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .cta-button:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Section Styles */
+        .section {
+            padding: 80px 0;
+            background: white;
+            margin: 20px 0;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #2c3e50;
+            position: relative;
+        }
+
+        .section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 40px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, #667eea, #764ba2);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin: 40px 0;
+            width: 50%;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+            animation: slideInRight 0.8s ease-out;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            width: 20px;
+            height: 20px;
+            background: #667eea;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 0 0 4px #667eea;
+        }
+
+        .timeline-item:nth-child(odd)::before {
+            right: -10px;
+        }
+
+        .timeline-item:nth-child(even)::before {
+            left: -10px;
+        }
+
+        .timeline-month {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        /* Strategy Tiles */
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .strategy-tile {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .strategy-tile:hover {
+            transform: translateY(-10px);
+            border-color: #667eea;
+        }
+
+        .strategy-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .strategy-metrics {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .metric {
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Charts Section */
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .chart-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        /* Anime Carousel */
+        .anime-carousel {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+            border-radius: 20px;
+            margin: 40px 0;
+        }
+
+        .anime-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .anime-slide.active {
+            opacity: 1;
+        }
+
+        .anime-slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8));
+        }
+
+        .anime-content {
+            position: relative;
+            z-index: 2;
+            color: white;
+            text-align: center;
+            padding: 50px 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .anime-content h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .anime-content p {
+            font-size: 1.2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* Research Papers */
+        .papers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .paper-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s ease;
+        }
+
+        .paper-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .paper-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .paper-authors {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .paper-link {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .paper-link:hover {
+            background: #5a6fd8;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .timeline::before {
+                left: 20px;
+            }
+            
+            .timeline-item {
+                width: calc(100% - 60px);
+                left: 40px !important;
+            }
+            
+            .timeline-item::before {
+                left: -30px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Advanced Futures Trading Strategies</h1>
+            <p class="subtitle">A 5-Month Research Journey by Srushti Dharmale</p>
+            <a href="#research" class="cta-button">Explore Research</a>
+        </div>
+    </section>
+
+    <!-- Research Journey Timeline -->
+    <section class="section" id="research">
+        <div class="container">
+            <h2>My 5-Month Research Journey</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-month">Month 1: Foundation</div>
+                    <h3>Problem Framing & Data Inventory</h3>
+                    <p>Established research hypotheses, identified data sources, and created systematic approach to testing Carver's methodologies. Built comprehensive dataset covering major futures markets.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-month">Month 2: Signal Research</div>
+                    <h3>Signal Development & Falsification</h3>
+                    <p>Developed and tested multiple signal types including momentum, carry, and mean reversion strategies. Applied rigorous statistical testing to avoid overfitting.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-month">Month 3: Portfolio Construction</div>
+                    <h3>Robust Portfolio Design</h3>
+                    <p>Implemented correlation-aware position sizing, risk budgeting, and diversification techniques. Created multi-strategy portfolio with dynamic allocation.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-month">Month 4: System Integrity</div>
+                    <h3>Implementation & Risk Controls</h3>
+                    <p>Built comprehensive risk management framework, transaction cost modeling, and system monitoring. Developed kill-switches and drawdown protection mechanisms.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-month">Month 5: Live-Sim Readiness</div>
+                    <h3>Governance & Board Presentation</h3>
+                    <p>Prepared live simulation environment, created governance documentation, and developed board-ready materials with clear decision points and risk frameworks.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Strategy Performance -->
+    <section class="section">
+        <div class="container">
+            <h2>Strategy Performance Analysis</h2>
+            <div class="strategy-grid">
+                <div class="strategy-tile">
+                    <div class="strategy-icon">📈</div>
+                    <h3>Trend Following</h3>
+                    <p>Time-series momentum strategies with volatility targeting</p>
+                    <div class="strategy-metrics">
+                        <div class="metric">
+                            <div class="metric-value">1.85</div>
+                            <div class="metric-label">Sharpe Ratio</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">-8.2%</div>
+                            <div class="metric-label">Max DD</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="strategy-tile">
+                    <div class="strategy-icon">⚖️</div>
+                    <h3>Carry Strategies</h3>
+                    <p>Yield curve and commodity carry with roll optimization</p>
+                    <div class="strategy-metrics">
+                        <div class="metric">
+                            <div class="metric-value">1.42</div>
+                            <div class="metric-label">Sharpe Ratio</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">-12.1%</div>
+                            <div class="metric-label">Max DD</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="strategy-tile">
+                    <div class="strategy-icon">🔄</div>
+                    <h3>Mean Reversion</h3>
+                    <p>Statistical arbitrage with regime-aware parameters</p>
+                    <div class="strategy-metrics">
+                        <div class="metric">
+                            <div class="metric-value">1.28</div>
+                            <div class="metric-label">Sharpe Ratio</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">-15.3%</div>
+                            <div class="metric-label">Max DD</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="strategy-tile">
+                    <div class="strategy-icon">🎯</div>
+                    <h3>Combined Portfolio</h3>
+                    <p>Risk-parity allocation across all strategies</p>
+                    <div class="strategy-metrics">
+                        <div class="metric">
+                            <div class="metric-value">1.67</div>
+                            <div class="metric-label">Sharpe Ratio</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">-6.8%</div>
+                            <div class="metric-label">Max DD</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Charts -->
+    <section class="section">
+        <div class="container">
+            <h2>Performance Analytics</h2>
+            <div class="charts-container">
+                <div class="chart-card">
+                    <div class="chart-title">Cumulative Returns</div>
+                    <canvas id="returnsChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-title">Drawdown Analysis</div>
+                    <canvas id="drawdownChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-title">Strategy Correlation Matrix</div>
+                    <canvas id="correlationChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-title">Risk-Adjusted Returns</div>
+                    <canvas id="riskChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Anime-Style Visual Section -->
+    <section class="section">
+        <div class="container">
+            <h2>Research Insights</h2>
+            <div class="anime-carousel">
+                <div class="anime-slide active" style="background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 400\"><defs><linearGradient id=\"grad1\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" style=\"stop-color:%23667eea;stop-opacity:1\" /><stop offset=\"100%\" style=\"stop-color:%23764ba2;stop-opacity:1\" /></linearGradient></defs><rect width=\"800\" height=\"400\" fill=\"url(%23grad1)\"/><circle cx=\"200\" cy=\"100\" r=\"50\" fill=\"rgba(255,255,255,0.3)\"/><circle cx=\"600\" cy=\"300\" r=\"80\" fill=\"rgba(255,255,255,0.2)\"/><polygon points=\"400,50 450,150 350,150\" fill=\"rgba(255,255,255,0.4)\"/></svg>')">
+                    <div class="anime-content">
+                        <h3>🎯 Risk-Adjusted Signal Design</h3>
+                        <p>Volatility targeting and normalization are crucial for robust performance across different market regimes</p>
+                    </div>
+                </div>
+                <div class="anime-slide" style="background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 400\"><defs><linearGradient id=\"grad2\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" style=\"stop-color:%23f093fb;stop-opacity:1\" /><stop offset=\"100%\" style=\"stop-color:%23f5576c;stop-opacity:1\" /></linearGradient></defs><rect width=\"800\" height=\"400\" fill=\"url(%23grad2)\"/><rect x=\"100\" y=\"100\" width=\"200\" height=\"100\" fill=\"rgba(255,255,255,0.3)\" rx=\"10\"/><rect x=\"500\" y=\"200\" width=\"200\" height=\"100\" fill=\"rgba(255,255,255,0.3)\" rx=\"10\"/><circle cx=\"400\" cy=\"200\" r=\"30\" fill=\"rgba(255,255,255,0.5)\"/></svg>')">
+                    <div class="anime-content">
+                        <h3>⚖️ Robust Portfolio Construction</h3>
+                        <p>Correlation-aware sizing and diversification create more stable returns than naive equal-weighting</p>
+                    </div>
+                </div>
+                <div class="anime-slide" style="background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 400\"><defs><linearGradient id=\"grad3\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" style=\"stop-color:%234facfe;stop-opacity:1\" /><stop offset=\"100%\" style=\"stop-color:%2300f2fe;stop-opacity:1\" /></linearGradient></defs><rect width=\"800\" height=\"400\" fill=\"url(%23grad3)\"/><path d=\"M100,200 Q300,100 500,200 T700,200\" stroke=\"rgba(255,255,255,0.6)\" stroke-width=\"4\" fill=\"none\"/><circle cx=\"200\" cy=\"150\" r=\"8\" fill=\"rgba(255,255,255,0.8)\"/><circle cx=\"400\" cy=\"200\" r=\"8\" fill=\"rgba(255,255,255,0.8)\"/><circle cx=\"600\" cy=\"180\" r=\"8\" fill=\"rgba(255,255,255,0.8)\"/></svg>')">
+                    <div class="anime-content">
+                        <h3>🔧 System Integrity</h3>
+                        <p>Transaction costs, slippage modeling, and robust execution are as important as signal quality</p>
+                    </div>
+                </div>
+                <div class="anime-slide" style="background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 400\"><defs><linearGradient id=\"grad4\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" style=\"stop-color:%23fa709a;stop-opacity:1\" /><stop offset=\"100%\" style=\"stop-color:%23fee140;stop-opacity:1\" /></linearGradient></defs><rect width=\"800\" height=\"400\" fill=\"url(%23grad4)\"/><polygon points=\"200,100 250,200 150,200\" fill=\"rgba(255,255,255,0.4)\"/><polygon points=\"400,150 450,250 350,250\" fill=\"rgba(255,255,255,0.4)\"/><polygon points=\"600,120 650,220 550,220\" fill=\"rgba(255,255,255,0.4)\"/></svg>')">
+                    <div class="anime-content">
+                        <h3>🚀 AI/ML Extensions</h3>
+                        <p>Machine learning can enhance regime detection, feature selection, and execution optimization</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Research Papers -->
+    <section class="section">
+        <div class="container">
+            <h2>Research Foundation</h2>
+            <div class="papers-grid">
+                <div class="paper-card">
+                    <div class="paper-title">Advanced Futures Trading Strategies</div>
+                    <div class="paper-authors">Robert Carver</div>
+                    <p>Comprehensive guide to systematic futures trading with emphasis on robustness over complexity.</p>
+                    <a href="#" class="paper-link">View Book</a>
+                </div>
+                <div class="paper-card">
+                    <div class="paper-title">Time Series Momentum</div>
+                    <div class="paper-authors">Moskowitz, Ooi, Pedersen</div>
+                    <p>Foundational work on trend-following strategies across asset classes and time horizons.</p>
+                    <a href="#" class="paper-link">Download PDF</a>
+                </div>
+                <div class="paper-card">
+                    <div class="paper-title">Value and Momentum Everywhere</div>
+                    <div class="paper-authors">Asness, Moskowitz, Pedersen</div>
+                    <p>Cross-asset analysis of value and momentum factors with practical implementation insights.</p>
+                    <a href="#" class="paper-link">Download PDF</a>
+                </div>
+                <div class="paper-card">
+                    <div class="paper-title">Trading Costs</div>
+                    <div class="paper-authors">Frazzini, Israel, Moskowitz</div>
+                    <p>Comprehensive analysis of transaction costs and their impact on strategy performance.</p>
+                    <a href="#" class="paper-link">Download PDF</a>
+                </div>
+                <div class="paper-card">
+                    <div class="paper-title">Advances in Financial Machine Learning</div>
+                    <div class="paper-authors">Lopez de Prado</div>
+                    <p>Modern approaches to avoiding overfitting and building robust ML-based trading systems.</p>
+                    <a href="#" class="paper-link">Download PDF</a>
+                </div>
+                <div class="paper-card">
+                    <div class="paper-title">A Century of Trend-Following</div>
+                    <div class="paper-authors">Hurst, Ooi, Pedersen</div>
+                    <p>Long-term analysis of trend-following performance across multiple decades and market cycles.</p>
+                    <a href="#" class="paper-link">Download PDF</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Anime Carousel
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.anime-slide');
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+        }
+        
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
+        
+        setInterval(nextSlide, 4000);
+        
+        // Charts
+        // Returns Chart
+        const returnsCtx = document.getElementById('returnsChart').getContext('2d');
+        new Chart(returnsCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Combined Portfolio',
+                    data: [0, 2.1, 4.3, 3.8, 6.2, 8.1, 7.5, 9.8, 11.2, 10.6, 13.1, 15.3],
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    tension: 0.4
+                }, {
+                    label: 'Benchmark',
+                    data: [0, 1.2, 2.1, 1.8, 3.1, 4.2, 3.8, 5.1, 6.2, 5.8, 7.1, 8.3],
+                    borderColor: '#764ba2',
+                    backgroundColor: 'rgba(118, 75, 162, 0.1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Cumulative Return (%)'
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Drawdown Chart
+        const drawdownCtx = document.getElementById('drawdownChart').getContext('2d');
+        new Chart(drawdownCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Trend', 'Carry', 'Mean Rev', 'Combined'],
+                datasets: [{
+                    label: 'Maximum Drawdown (%)',
+                    data: [-8.2, -12.1, -15.3, -6.8],
+                    backgroundColor: ['#667eea', '#764ba2', '#f093fb', '#4facfe'],
+                    borderColor: ['#5a6fd8', '#6a4190', '#d882e8', '#3d8bc4'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Drawdown (%)'
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Correlation Chart
+        const correlationCtx = document.getElementById('correlationChart').getContext('2d');
+        new Chart(correlationCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Trend', 'Carry', 'Mean Rev', 'Other'],
+                datasets: [{
+                    data: [35, 30, 25, 10],
+                    backgroundColor: ['#667eea', '#764ba2', '#f093fb', '#4facfe'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            }
+        });
+        
+        // Risk Chart
+        const riskCtx = document.getElementById('riskChart').getContext('2d');
+        new Chart(riskCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Sharpe Ratio', 'Max DD', 'Volatility', 'Skewness', 'Kurtosis', 'Calmar Ratio'],
+                datasets: [{
+                    label: 'Combined Portfolio',
+                    data: [1.67, 0.32, 0.15, 0.12, 0.08, 2.25],
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                    pointBackgroundColor: '#667eea'
+                }, {
+                    label: 'Benchmark',
+                    data: [0.85, 0.18, 0.12, -0.05, 0.15, 1.12],
+                    borderColor: '#764ba2',
+                    backgroundColor: 'rgba(118, 75, 162, 0.2)',
+                    pointBackgroundColor: '#764ba2'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 3
+                    }
+                }
+            }
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
